@@ -22,6 +22,7 @@ public class ProductController {
 
     @PostMapping()
     public ResponseEntity<Product> save(@RequestBody Product product) {
+        System.out.println("");
         Product productSaved = this.productService.create(product);
         URI location = URI.create("/products/" + productSaved.id());
 
