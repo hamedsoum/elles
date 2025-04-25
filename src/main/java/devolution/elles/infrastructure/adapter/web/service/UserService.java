@@ -23,7 +23,7 @@ public class UserService implements UserUseCase {
 
     @Override
     public List<User> findAll() {
-        return List.of();
+        return this.userRepository.findAll();
     }
 
     @Override
@@ -33,6 +33,10 @@ public class UserService implements UserUseCase {
 
     @Override
     public void delete(String id) {
+    }
 
+    @Override
+    public User retrieve(String email) {
+        return userRepository.findByEmail(email);
     }
 }

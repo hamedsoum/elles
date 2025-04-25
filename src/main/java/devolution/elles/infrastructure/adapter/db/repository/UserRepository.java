@@ -30,6 +30,16 @@ public class UserRepository implements devolution.elles.domain.port.out.UserRepo
     }
 
     @Override
+    public User findByEmail(String email) {
+        Optional<UserEntity> entity = this.jpaUserRepository.findByEmail(email);
+        if (entity.isPresent()) {
+            return UserDBMapper.toDomain(entity.get());
+        } else {
+            throw new RuntimeException("Utilisateur non trouvé");
+        }
+    }
+
+    @Override
     public List<User> findAll() {
         return this.jpaUserRepository.findAll()
                 .stream().map(UserDBMapper::toDomain).collect(Collectors.toList());

@@ -32,7 +32,7 @@ public class ConfigurationSecurityApplication {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/subscriptions/**", "/products/**", "/users/login").permitAll()
+                                .requestMatchers("/subscriptions/**", "/products/**", "/users/**").permitAll()
                                 .requestMatchers(POST, "/users/register").permitAll()
                                 .requestMatchers(GET, "/v3/api-docs/**").permitAll()
                                 .requestMatchers(GET, "/swagger-ui/**").permitAll()

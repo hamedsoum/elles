@@ -4,6 +4,7 @@ import devolution.elles.domain.model.User;
 import devolution.elles.domain.port.in.UserUseCase;
 import devolution.elles.infrastructure.adapter.db.entity.UserEntity;
 import devolution.elles.infrastructure.adapter.db.repository.UserDetailRepository;
+import devolution.elles.infrastructure.adapter.web.dto.AuthenticationResponse;
 import devolution.elles.infrastructure.adapter.web.dto.LoginDto;
 import devolution.elles.infrastructure.adapter.web.dto.UserRequestDto;
 import devolution.elles.infrastructure.adapter.web.dto.UserResponseDto;
@@ -12,13 +13,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.Map;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -27,6 +28,7 @@ public class UserController {
 
     private final UserUseCase userUseCase;
     private final UserDetailRepository userSecurityAdapter;
+
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -35,7 +37,7 @@ public class UserController {
         this.userSecurityAdapter = userSecurityAdapter;
     }
 
-    @PostMapping(path = "register")
+    @PostMapping()
     public ResponseEntity<UserResponseDto> save(@RequestBody UserRequestDto userRequestDto) {
         User user = UserDtoMapper.toDomain(userRequestDto);
         this.userUseCase.save(user);
@@ -47,13 +49,27 @@ public class UserController {
                 .body(UserDtoMapper.toUserResponseDto(saved));
     }
 
-    @PostMapping(path = "login")
-    public Map<String, String> login(@RequestBody LoginDto loginDto) {
-//        Authentication authenticate = this.authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(loginDto.username(), loginDto.password()));
-//        System.out.println("User Authenticated ===>" + authenticate.isAuthenticated());
-//        System.out.println(loginDto.password());
-        return null;
+    @GetMapping()
+    public ResponseEntity<List<UserEntity>> findAll() {
+        List<UserEntity> users = this.userSecurityAdapter.findAll();
+        URI location = URI.create("/users/");
+        return ResponseEntity
+                .created(location)
+                .body(users);
     }
 
+    @PostMapping(path = "login")
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginDto loginDto) {
+        UserEntity user = this.userSecurityAdapter.findByEmail(loginDto.username());
+        if (user == null) throw new UsernameNotFoundException("User not found");
+        if (!Objects.equals(user.getPassword(), loginDto.password()))
+            throw new UsernameNotFoundException("Mot de passe incorrect");
+
+        String token = UUID.randomUUID().toString();
+        URI location = URI.create("/users/login");
+        AuthenticationResponse response = new AuthenticationResponse(token, user);
+        return ResponseEntity
+                .created(location)
+                .body(response);
+    }
 }

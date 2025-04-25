@@ -12,4 +12,7 @@ public interface UserUseCase {
     User update(String id, User user);
 
     void delete(String id);
+
+    User retrieve(String email);
+
 }

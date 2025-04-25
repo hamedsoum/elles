@@ -7,7 +7,12 @@ import java.util.Optional;
 
 public interface UserRepository {
     Optional<User> findByID(String id);
+
+    User findByEmail(String email);
+
     List<User> findAll();
+
     User save(User user);
+
     void delete(String id);
 }

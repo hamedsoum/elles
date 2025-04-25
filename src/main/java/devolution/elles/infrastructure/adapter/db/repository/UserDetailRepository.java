@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @NoArgsConstructor
 @Service
@@ -26,10 +28,19 @@ public class UserDetailRepository implements UserDetailsService {
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+
+    public List<UserEntity> findAll() {
+        return this.jpaUserRepository.findAll();
+    }
+
+    public UserEntity findByEmail(String email) {
+        return this.jpaUserRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
     public UserEntity save(User user, String password, RoleType role) {
         UserEntity entity = entityMapper.toEntity(user);
-        String encodedPassword = this.passwordEncoder.encode(password);
-        entity.setPassword(encodedPassword);
+//        String encodedPassword = this.passwordEncoder.encode(password);
+        entity.setPassword(password);
 
         Role userRole = new Role();
         userRole.setLibelle(role);
