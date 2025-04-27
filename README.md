@@ -1,5 +1,8 @@
 # Installation du projet
 
+# IDE recommandé
+IntelliJ IDEA
+
 # Prérequis
 Maven 4.0.0
 docker
