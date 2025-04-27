@@ -10,6 +10,7 @@ public class InsuredDBMapper {
                 entity.getId(),
                 entity.getFirstName(),
                 entity.getLastName(),
+                entity.getPhoneNumber(),
                 entity.getIdentityNumber(),
                 entity.getCity(),
                 entity.getAddress()
@@ -22,6 +23,7 @@ public class InsuredDBMapper {
                 insured.id(),
                 insured.firstName(),
                 insured.lastName(),
+                insured.phoneNumber(),
                 insured.identityNumber(),
                 insured.city(),
                 insured.address()

@@ -20,6 +20,7 @@ public class InsuredEntity {
     private String id;
     private String firstName;
     private String lastName;
+    private String phoneNumber;
     private String identityNumber;
     private String city;
     private String address;

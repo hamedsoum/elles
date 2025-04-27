@@ -29,6 +29,7 @@ public class SubscriptionRepository implements devolution.elles.domain.port.out.
         Product product = productRepository.retrieve(subscription.productID());
         if (product == null) throw new RuntimeException("Subscription not found for id " + subscription.productID());
         SubscriptionEntity entity = SubscriptionDBMapper.toEntity(subscription);
+        entity.setProductID(product.id());
         SubscriptionEntity saved = jpaSubscriptionRepository.save(entity);
         return SubscriptionDBMapper.toDomain(saved);
     }

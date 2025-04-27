@@ -9,6 +9,7 @@ import devolution.elles.infrastructure.adapter.web.dto.LoginDto;
 import devolution.elles.infrastructure.adapter.web.dto.UserRequestDto;
 import devolution.elles.infrastructure.adapter.web.dto.UserResponseDto;
 import devolution.elles.infrastructure.adapter.web.mapper.UserDtoMapper;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,7 @@ public class UserController {
     }
 
     @PostMapping()
+    @Operation(summary = "Créer un nouvel utilisateur")
     public ResponseEntity<UserResponseDto> save(@RequestBody UserRequestDto userRequestDto) {
         User user = UserDtoMapper.toDomain(userRequestDto);
         this.userUseCase.save(user);
@@ -50,6 +52,7 @@ public class UserController {
     }
 
     @GetMapping()
+    @Operation(summary = "Récupérer tous les utilisateurs")
     public ResponseEntity<List<UserEntity>> findAll() {
         List<UserEntity> users = this.userSecurityAdapter.findAll();
         URI location = URI.create("/users/");
@@ -59,6 +62,7 @@ public class UserController {
     }
 
     @PostMapping(path = "login")
+    @Operation(summary = "Génération de token et connexion")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginDto loginDto) {
         UserEntity user = this.userSecurityAdapter.findByEmail(loginDto.username());
         if (user == null) throw new UsernameNotFoundException("User not found");
